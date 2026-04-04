@@ -3,236 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Withdraw Portal</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Orange Cream Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #00d2ff;
-            --secondary: #92fe9d;
-            --error: #ff4b2b;
-            --success: #00ff88;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --cream: #FFF5E1;
+            --orange-light: #FF9F45;
+            --orange-dark: #F76E11;
+            --error: #FF1E1E;
+            --success: #27ae60;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-            color: white;
+            background: linear-gradient(135deg, #FF9F45 0%, #FFF5E1 100%);
+            height: 100vh;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             overflow: hidden;
         }
 
-        /* Glassmorphism Card */
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 40px;
-            width: 400px;
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(247, 110, 17, 0.2);
+            width: 380px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            transition: all 0.4s ease;
+            position: relative;
+            border: 4px solid var(--cream);
         }
 
-        h2 {
-            font-weight: 600;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            font-size: 22px;
-        }
+        h2 { color: var(--orange-dark); margin-bottom: 20px; text-transform: uppercase; }
 
         .hidden { display: none; }
-        
-        /* Buttons Styling */
+
+        /* Stylish Inputs */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid var(--cream);
+            border-radius: 12px;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        input:focus { border-color: var(--orange-light); }
+
+        /* Buttons */
         button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             margin: 10px 0;
             border: none;
             border-radius: 12px;
-            font-size: 14px;
+            background: linear-gradient(to right, var(--orange-light), var(--orange-dark));
+            color: white;
             font-weight: 600;
-            text-transform: uppercase;
             cursor: pointer;
             transition: 0.3s;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.5);
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Custom Alert/Notification */
+        #customAlert {
+            position: fixed;
+            top: 20px;
+            right: -300px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--orange-dark);
+            transition: 0.5s;
+            z-index: 1000;
         }
 
-        button:disabled {
-            background: #2c3e50;
-            cursor: not-allowed;
-            opacity: 0.5;
-            transform: none;
-        }
-
-        /* Inputs Styling */
-        input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            text-align: center;
-            font-size: 15px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        /* Generated Code Box (Cool Font) */
-        #generatedCode {
+        /* Generated Code Section */
+        #codeBox {
             font-family: 'Orbitron', sans-serif;
-            background: rgba(0, 210, 255, 0.1);
-            color: var(--primary);
-            padding: 20px;
-            margin: 20px 0;
-            border: 2px dashed var(--primary);
-            border-radius: 15px;
-            font-size: 24px;
-            letter-spacing: 4px;
-            cursor: pointer;
-            text-shadow: 0 0 10px var(--primary);
-            display: none;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.02); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-
-        #statusMessage {
-            margin-top: 20px;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .error { color: var(--error); }
-        .success { color: var(--success); text-shadow: 0 0 10px var(--success); }
-
-        .back-link {
-            display: block;
-            margin-top: 20px;
-            color: #aaa;
-            text-decoration: none;
-            font-size: 12px;
+            font-size: 22px;
+            color: var(--orange-dark);
+            background: var(--cream);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px dashed var(--orange-light);
             cursor: pointer;
         }
 
-        .back-link:hover { color: white; }
+        .error-text { color: var(--error); font-size: 12px; display: none; margin-top: -8px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="mainContainer">
-    <div id="screen1">
-        <h2>System Access</h2>
-        <button onclick="nav('screen1', 'screen2')">Withdraw</button>
-        <button disabled style="position: relative;">Deposit <span style="font-size: 10px; vertical-align: top;">(SOON)</span></button>
+<div id="customAlert">Message here!</div>
+
+<div class="card" id="mainCard">
+    <div id="step1">
+        <h2>Welcome</h2>
+        <button onclick="moveStep('step1', 'step2')">Withdraw</button>
+        <button disabled style="background: #eee; color: #999;">Deposit (Soon)</button>
     </div>
 
-    <div id="screen2" class="hidden">
-        <h2>Select Method</h2>
-        <button onclick="setMethod('OWO')">OWO Wallet</button>
-        <button onclick="setMethod('LTC')">LTC Wallet</button>
-        <a class="back-link" onclick="nav('screen2', 'screen1')">Go Back</a>
+    <div id="step2" class="hidden">
+        <h2>Method</h2>
+        <button onclick="openForm('Owo')">Owo Wallet</button>
+        <button onclick="openForm('LTC')">LTC Wallet</button>
     </div>
 
-    <div id="screen3" class="hidden">
+    <div id="step3" class="hidden">
         <h2 id="methodTitle">Details</h2>
-        <input type="text" id="username" placeholder="Enter Username">
-        <input type="text" id="userid" placeholder="Enter User ID">
-        <button onclick="handleGenerate()">Generate Code</button>
+        <input type="text" id="username" placeholder="Username">
         
-        <div id="generatedCode" title="Click to copy code"></div>
+        <input type="text" id="userid" placeholder="User ID (Numbers Only)" oninput="validateID(this)">
+        <div id="idError" class="error-text">Fill Properly (Numbers Only)</div>
         
-        <div id="redeemArea" class="hidden">
-            <input type="text" id="redeemInput" placeholder="Enter Code to Redeem">
-            <button onclick="handleRedeem()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Redeem Now</button>
-        </div>
+        <button id="genBtn" onclick="generateNow()">Generate Code</button>
+    </div>
 
-        <div id="statusMessage"></div>
-        <a class="back-link" onclick="nav('screen3', 'screen2')">Back to Methods</a>
+    <div id="step4" class="hidden">
+        <h2 style="color: var(--success);">Redeem</h2>
+        <p style="font-size: 12px; color: #666;">Click code to copy</p>
+        <div id="codeBox" onclick="copyCode()"></div>
+        
+        <input type="text" id="redeemInput" placeholder="Paste Code Here">
+        <button onclick="finalRedeem()" style="background: var(--success);">Confirm Withdrawal</button>
+        <p id="finalStatus" style="font-weight: bold; margin-top: 15px;"></p>
     </div>
 </div>
 
 <script>
-    let activeCode = "";
+    let generatedCode = "";
 
-    // Simple navigation function
-    function nav(hide, show) {
+    // Custom Stylish Alert function
+    function showAlert(msg, color = "#F76E11") {
+        const alertBox = document.getElementById('customAlert');
+        alertBox.innerText = msg;
+        alertBox.style.borderLeftColor = color;
+        alertBox.style.right = "20px";
+        setTimeout(() => { alertBox.style.right = "-300px"; }, 3000);
+    }
+
+    function moveStep(hide, show) {
         document.getElementById(hide).classList.add('hidden');
         document.getElementById(show).classList.remove('hidden');
-        // Resetting status messages when moving
-        document.getElementById('statusMessage').innerText = "";
     }
 
-    function setMethod(name) {
-        document.getElementById('methodTitle').innerText = name + " Withdrawal";
-        nav('screen2', 'screen3');
+    function openForm(method) {
+        document.getElementById('methodTitle').innerText = method + " Info";
+        moveStep('step2', 'step3');
     }
 
-    function handleGenerate() {
+    // Numbers Only Validation
+    function validateID(input) {
+        const error = document.getElementById('idError');
+        const regex = /^[0-9]*$/;
+        if (!regex.test(input.value)) {
+            error.style.display = "block";
+            input.style.borderColor = "var(--error)";
+        } else {
+            error.style.display = "none";
+            input.style.borderColor = "var(--cream)";
+        }
+    }
+
+    function generateNow() {
         const u = document.getElementById('username').value;
         const i = document.getElementById('userid').value;
+        const regex = /^[0-9]+$/;
 
-        if (u.trim() === "" || i.trim() === "") {
-            alert("Please fill in both Username and User ID");
+        if (u === "" || !regex.test(i)) {
+            showAlert("Fill Properly!", "#FF1E1E");
             return;
         }
 
-        // Generate a cool random code
-        activeCode = "X-" + Math.random().toString(36).substr(2, 7).toUpperCase();
-        
-        const display = document.getElementById('generatedCode');
-        display.innerText = activeCode;
-        display.style.display = "block";
-
-        // Click to copy logic
-        display.onclick = function() {
-            navigator.clipboard.writeText(activeCode);
-            alert("Code Copied! Now enter it below to redeem.");
-            document.getElementById('redeemArea').classList.remove('hidden');
-        };
+        generatedCode = "OC-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+        document.getElementById('codeBox').innerText = generatedCode;
+        moveStep('step3', 'step4');
+        showAlert("Code Generated successfully!");
     }
 
-    function handleRedeem() {
-        const input = document.getElementById('redeemInput').value;
-        const status = document.getElementById('statusMessage');
+    function copyCode() {
+        navigator.clipboard.writeText(generatedCode);
+        showAlert("Code Copied to clipboard!", "#27ae60");
+    }
 
-        if (input === activeCode && activeCode !== "") {
+    function finalRedeem() {
+        const input = document.getElementById('redeemInput').value;
+        const status = document.getElementById('finalStatus');
+
+        if (input === generatedCode && generatedCode !== "") {
             status.innerText = "Successful Withdrawal ✅";
-            status.className = "success";
+            status.style.color = "var(--success)";
+            showAlert("Success!", "#27ae60");
         } else {
-            status.innerText = "Invalid Code ❌";
-            status.className = "error";
+            status.innerText = "Invalid Code! ❌";
+            status.style.color = "var(--error)";
+            showAlert("Invalid Code!", "#FF1E1E");
         }
     }
 </script>
