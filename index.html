@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 350px; }
+        .hidden { display: none; }
+        button { background: #3f51b5; color: white; border: none; padding: 12px 20px; margin: 10px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.3s; width: 80%; }
+        button:hover { background: #5c6bc0; }
+        button:disabled { background: #444; cursor: not-allowed; }
+        input { width: 80%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #2b2b2b; color: white; text-align: center; }
+        #generatedCode { background: #333; padding: 10px; margin: 15px 0; border: 1px dashed #777; cursor: pointer; font-weight: bold; color: #00e676; display: none; }
+        #statusMessage { margin-top: 15px; font-weight: bold; }
+        .error { color: #ff5252; }
+        .success { color: #00e676; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="step1">
+        <h2>Choose Action</h2>
+        <button onclick="showStep('step2')">Withdraw</button>
+        <button disabled>Deposit (Soon)</button>
+    </div>
+
+    <div id="step2" class="hidden">
+        <h2>Select Method</h2>
+        <button onclick="showInput('Owo')">Owo</button>
+        <button onclick="showInput('LTC')">LTC</button>
+        <p><a href="#" onclick="showStep('step1')" style="color: #aaa; font-size: 12px;">Go Back</a></p>
+    </div>
+
+    <div id="step3" class="hidden">
+        <h2 id="methodTitle">Withdraw</h2>
+        <input type="text" id="username" placeholder="Enter Username">
+        <input type="text" id="userid" placeholder="Enter User ID">
+        <button onclick="generateCode()">Generate Code</button>
+        
+        <div id="generatedCode" title="Click to copy"></div>
+        
+        <div id="redeemSection" class="hidden">
+            <input type="text" id="redeemInput" placeholder="Paste Code Here">
+            <button onclick="validateRedeem()" style="background: #e91e63;">Redeem</button>
+        </div>
+        
+        <div id="statusMessage"></div>
+    </div>
+</div>
+
+<script>
+    let currentGenCode = "";
+
+    function showStep(stepId) {
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.add('hidden');
+        document.getElementById(stepId).classList.remove('hidden');
+    }
+
+    function showInput(method) {
+        document.getElementById('methodTitle').innerText = "Withdraw via " + method;
+        showStep('step3');
+    }
+
+    function generateCode() {
+        const user = document.getElementById('username').value;
+        const id = document.getElementById('userid').value;
+
+        if (user === "" || id === "") {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        // Random code generation
+        currentGenCode = "WD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        
+        const codeDiv = document.getElementById('generatedCode');
+        codeDiv.innerText = currentGenCode;
+        codeDiv.style.display = "block";
+        
+        // Copy to clipboard logic
+        codeDiv.onclick = function() {
+            navigator.clipboard.writeText(currentGenCode);
+            alert("Code copied to clipboard!");
+            document.getElementById('redeemSection').classList.remove('hidden');
+        };
+    }
+
+    function validateRedeem() {
+        const input = document.getElementById('redeemInput').value;
+        const status = document.getElementById('statusMessage');
+
+        if (input === currentGenCode && currentGenCode !== "") {
+            status.innerText = "Successful Withdrawal ✅";
+            status.className = "success";
+        } else {
+            status.innerText = "Invalid Code ❌";
+            status.className = "error";
+        }
+    }
+</script>
+
+</body>
+</html>
