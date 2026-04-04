@@ -4,113 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Withdraw Portal</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #00d2ff;
             --secondary: #92fe9d;
-            --glass: rgba(255, 255, 255, 0.1);
             --error: #ff4b2b;
             --success: #00ff88;
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
             overflow: hidden;
         }
 
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
+        /* Glassmorphism Card */
         .container {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            border-radius: 24px;
+            padding: 40px;
+            width: 400px;
             text-align: center;
-            width: 380px;
-            transition: all 0.5s ease;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
         }
 
-        h2 { font-weight: 600; letter-spacing: 1px; margin-bottom: 25px; }
-
-        .hidden { display: none; opacity: 0; transform: translateY(20px); }
-        .visible { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.5s forwards; }
-
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        button {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            margin: 12px 0;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 15px;
+        h2 {
             font-weight: 600;
-            width: 100%;
-            transition: 0.3s;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 22px;
+        }
+
+        .hidden { display: none; }
+        
+        /* Buttons Styling */
+        button {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         button:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(118, 75, 162, 0.5);
         }
 
         button:disabled {
             background: #2c3e50;
             cursor: not-allowed;
-            opacity: 0.6;
+            opacity: 0.5;
+            transform: none;
         }
 
+        /* Inputs Styling */
         input {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.2);
             color: white;
-            box-sizing: border-box;
+            text-align: center;
+            font-size: 15px;
             outline: none;
+            transition: 0.3s;
         }
 
-        input:focus { border-color: var(--primary); }
+        input:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.5);
+        }
 
-        /* The Cool Generated Font */
+        /* Generated Code Box (Cool Font) */
         #generatedCode {
             font-family: 'Orbitron', sans-serif;
             background: rgba(0, 210, 255, 0.1);
-            padding: 15px;
+            color: var(--primary);
+            padding: 20px;
             margin: 20px 0;
             border: 2px dashed var(--primary);
-            border-radius: 10px;
+            border-radius: 15px;
+            font-size: 24px;
+            letter-spacing: 4px;
             cursor: pointer;
-            font-size: 20px;
-            letter-spacing: 3px;
-            color: var(--primary);
             text-shadow: 0 0 10px var(--primary);
             display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
         #statusMessage {
@@ -119,102 +134,104 @@
             font-size: 18px;
         }
 
-        .error { color: var(--error); text-shadow: 0 0 5px var(--error); }
+        .error { color: var(--error); }
         .success { color: var(--success); text-shadow: 0 0 10px var(--success); }
 
-        .back-btn { color: #ccc; cursor: pointer; font-size: 13px; text-decoration: underline; margin-top: 10px; display: inline-block; }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .back-link:hover { color: white; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="step1" class="visible">
-        <h2>PORTAL ACCESS</h2>
-        <button onclick="changeStep('step1', 'step2')">Withdraw</button>
-        <button disabled>Deposit (Soon)</button>
+<div class="container" id="mainContainer">
+    <div id="screen1">
+        <h2>System Access</h2>
+        <button onclick="nav('screen1', 'screen2')">Withdraw</button>
+        <button disabled style="position: relative;">Deposit <span style="font-size: 10px; vertical-align: top;">(SOON)</span></button>
     </div>
 
-    <div id="step2" class="hidden">
-        <h2>METHOD</h2>
-        <button onclick="setupInput('Owo')">OWO Wallet</button>
-        <button onclick="setupInput('LTC')">LTC Wallet</button>
-        <span class="back-btn" onclick="changeStep('step2', 'step1')">Go Back</span>
+    <div id="screen2" class="hidden">
+        <h2>Select Method</h2>
+        <button onclick="setMethod('OWO')">OWO Wallet</button>
+        <button onclick="setMethod('LTC')">LTC Wallet</button>
+        <a class="back-link" onclick="nav('screen2', 'screen1')">Go Back</a>
     </div>
 
-    <div id="step3" class="hidden">
-        <h2 id="methodTitle">DETAILS</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="text" id="userid" placeholder="User ID (Numerical)">
-        <button onclick="generateCode()">Generate Secure Code</button>
+    <div id="screen3" class="hidden">
+        <h2 id="methodTitle">Details</h2>
+        <input type="text" id="username" placeholder="Enter Username">
+        <input type="text" id="userid" placeholder="Enter User ID">
+        <button onclick="handleGenerate()">Generate Code</button>
         
-        <div id="generatedCode" title="Click to copy & continue"></div>
+        <div id="generatedCode" title="Click to copy code"></div>
         
-        <div id="redeemSection" class="hidden" style="margin-top:20px;">
-            <input type="text" id="redeemInput" placeholder="Paste Code to Verify">
-            <button onclick="validateRedeem()" style="background: linear-gradient(135deg, #f093fb, #f5576c);">REDEEM NOW</button>
+        <div id="redeemArea" class="hidden">
+            <input type="text" id="redeemInput" placeholder="Enter Code to Redeem">
+            <button onclick="handleRedeem()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Redeem Now</button>
         </div>
-        
+
         <div id="statusMessage"></div>
-        <span class="back-btn" onclick="changeStep('step3', 'step2')">Back</span>
+        <a class="back-link" onclick="nav('screen3', 'screen2')">Back to Methods</a>
     </div>
 </div>
 
 <script>
-    let currentGenCode = "";
+    let activeCode = "";
 
-    function changeStep(hideId, showId) {
-        document.getElementById(hideId).classList.remove('visible');
-        document.getElementById(hideId).classList.add('hidden');
-        
-        setTimeout(() => {
-            document.getElementById(hideId).style.display = 'none';
-            const showEl = document.getElementById(showId);
-            showEl.style.display = 'block';
-            setTimeout(() => {
-                showEl.classList.remove('hidden');
-                showEl.classList.add('visible');
-            }, 50);
-        }, 300);
+    // Simple navigation function
+    function nav(hide, show) {
+        document.getElementById(hide).classList.add('hidden');
+        document.getElementById(show).classList.remove('hidden');
+        // Resetting status messages when moving
+        document.getElementById('statusMessage').innerText = "";
     }
 
-    function setupInput(method) {
-        document.getElementById('methodTitle').innerText = method + " WITHDRAWAL";
-        changeStep('step2', 'step3');
+    function setMethod(name) {
+        document.getElementById('methodTitle').innerText = name + " Withdrawal";
+        nav('screen2', 'screen3');
     }
 
-    function generateCode() {
+    function handleGenerate() {
         const u = document.getElementById('username').value;
         const i = document.getElementById('userid').value;
 
-        if (!u || !i) {
-            alert("Fields cannot be empty!");
+        if (u.trim() === "" || i.trim() === "") {
+            alert("Please fill in both Username and User ID");
             return;
         }
 
-        // Generating a stylish random code
-        currentGenCode = "TXN-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+        // Generate a cool random code
+        activeCode = "X-" + Math.random().toString(36).substr(2, 7).toUpperCase();
         
-        const codeDiv = document.getElementById('generatedCode');
-        codeDiv.innerText = currentGenCode;
-        codeDiv.style.display = "block";
-        
-        codeDiv.onclick = function() {
-            navigator.clipboard.writeText(currentGenCode);
-            alert("Code Copied! Now paste it in the redeem box.");
-            document.getElementById('redeemSection').style.display = "block";
-            document.getElementById('redeemSection').classList.add('visible');
+        const display = document.getElementById('generatedCode');
+        display.innerText = activeCode;
+        display.style.display = "block";
+
+        // Click to copy logic
+        display.onclick = function() {
+            navigator.clipboard.writeText(activeCode);
+            alert("Code Copied! Now enter it below to redeem.");
+            document.getElementById('redeemArea').classList.remove('hidden');
         };
     }
 
-    function validateRedeem() {
+    function handleRedeem() {
         const input = document.getElementById('redeemInput').value;
         const status = document.getElementById('statusMessage');
 
-        if (input === currentGenCode && currentGenCode !== "") {
+        if (input === activeCode && activeCode !== "") {
             status.innerText = "Successful Withdrawal ✅";
             status.className = "success";
         } else {
-            status.innerText = "Invalid Code! Try Again ❌";
+            status.innerText = "Invalid Code ❌";
             status.className = "error";
         }
     }
@@ -222,3 +239,4 @@
 
 </body>
 </html>
+
