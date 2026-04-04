@@ -3,90 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withdrawal Portal</title>
+    <title>Premium Withdraw Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; width: 350px; }
-        .hidden { display: none; }
-        button { background: #3f51b5; color: white; border: none; padding: 12px 20px; margin: 10px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.3s; width: 80%; }
-        button:hover { background: #5c6bc0; }
-        button:disabled { background: #444; cursor: not-allowed; }
-        input { width: 80%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #2b2b2b; color: white; text-align: center; }
-        #generatedCode { background: #333; padding: 10px; margin: 15px 0; border: 1px dashed #777; cursor: pointer; font-weight: bold; color: #00e676; display: none; }
-        #statusMessage { margin-top: 15px; font-weight: bold; }
-        .error { color: #ff5252; }
-        .success { color: #00e676; }
+        :root {
+            --primary: #00d2ff;
+            --secondary: #92fe9d;
+            --glass: rgba(255, 255, 255, 0.1);
+            --error: #ff4b2b;
+            --success: #00ff88;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            text-align: center;
+            width: 380px;
+            transition: all 0.5s ease;
+        }
+
+        h2 { font-weight: 600; letter-spacing: 1px; margin-bottom: 25px; }
+
+        .hidden { display: none; opacity: 0; transform: translateY(20px); }
+        .visible { display: block; opacity: 1; transform: translateY(0); animation: fadeIn 0.5s forwards; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        button {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            margin: 12px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.4);
+        }
+
+        button:disabled {
+            background: #2c3e50;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        /* The Cool Generated Font */
+        #generatedCode {
+            font-family: 'Orbitron', sans-serif;
+            background: rgba(0, 210, 255, 0.1);
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary);
+            display: none;
+        }
+
+        #statusMessage {
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .error { color: var(--error); text-shadow: 0 0 5px var(--error); }
+        .success { color: var(--success); text-shadow: 0 0 10px var(--success); }
+
+        .back-btn { color: #ccc; cursor: pointer; font-size: 13px; text-decoration: underline; margin-top: 10px; display: inline-block; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="step1">
-        <h2>Choose Action</h2>
-        <button onclick="showStep('step2')">Withdraw</button>
+    <div id="step1" class="visible">
+        <h2>PORTAL ACCESS</h2>
+        <button onclick="changeStep('step1', 'step2')">Withdraw</button>
         <button disabled>Deposit (Soon)</button>
     </div>
 
     <div id="step2" class="hidden">
-        <h2>Select Method</h2>
-        <button onclick="showInput('Owo')">Owo</button>
-        <button onclick="showInput('LTC')">LTC</button>
-        <p><a href="#" onclick="showStep('step1')" style="color: #aaa; font-size: 12px;">Go Back</a></p>
+        <h2>METHOD</h2>
+        <button onclick="setupInput('Owo')">OWO Wallet</button>
+        <button onclick="setupInput('LTC')">LTC Wallet</button>
+        <span class="back-btn" onclick="changeStep('step2', 'step1')">Go Back</span>
     </div>
 
     <div id="step3" class="hidden">
-        <h2 id="methodTitle">Withdraw</h2>
-        <input type="text" id="username" placeholder="Enter Username">
-        <input type="text" id="userid" placeholder="Enter User ID">
-        <button onclick="generateCode()">Generate Code</button>
+        <h2 id="methodTitle">DETAILS</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="text" id="userid" placeholder="User ID (Numerical)">
+        <button onclick="generateCode()">Generate Secure Code</button>
         
-        <div id="generatedCode" title="Click to copy"></div>
+        <div id="generatedCode" title="Click to copy & continue"></div>
         
-        <div id="redeemSection" class="hidden">
-            <input type="text" id="redeemInput" placeholder="Paste Code Here">
-            <button onclick="validateRedeem()" style="background: #e91e63;">Redeem</button>
+        <div id="redeemSection" class="hidden" style="margin-top:20px;">
+            <input type="text" id="redeemInput" placeholder="Paste Code to Verify">
+            <button onclick="validateRedeem()" style="background: linear-gradient(135deg, #f093fb, #f5576c);">REDEEM NOW</button>
         </div>
         
         <div id="statusMessage"></div>
+        <span class="back-btn" onclick="changeStep('step3', 'step2')">Back</span>
     </div>
 </div>
 
 <script>
     let currentGenCode = "";
 
-    function showStep(stepId) {
-        document.getElementById('step1').classList.add('hidden');
-        document.getElementById('step2').classList.add('hidden');
-        document.getElementById('step3').classList.add('hidden');
-        document.getElementById(stepId).classList.remove('hidden');
+    function changeStep(hideId, showId) {
+        document.getElementById(hideId).classList.remove('visible');
+        document.getElementById(hideId).classList.add('hidden');
+        
+        setTimeout(() => {
+            document.getElementById(hideId).style.display = 'none';
+            const showEl = document.getElementById(showId);
+            showEl.style.display = 'block';
+            setTimeout(() => {
+                showEl.classList.remove('hidden');
+                showEl.classList.add('visible');
+            }, 50);
+        }, 300);
     }
 
-    function showInput(method) {
-        document.getElementById('methodTitle').innerText = "Withdraw via " + method;
-        showStep('step3');
+    function setupInput(method) {
+        document.getElementById('methodTitle').innerText = method + " WITHDRAWAL";
+        changeStep('step2', 'step3');
     }
 
     function generateCode() {
-        const user = document.getElementById('username').value;
-        const id = document.getElementById('userid').value;
+        const u = document.getElementById('username').value;
+        const i = document.getElementById('userid').value;
 
-        if (user === "" || id === "") {
-            alert("Please fill all fields!");
+        if (!u || !i) {
+            alert("Fields cannot be empty!");
             return;
         }
 
-        // Random code generation
-        currentGenCode = "WD-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        // Generating a stylish random code
+        currentGenCode = "TXN-" + Math.random().toString(36).substr(2, 6).toUpperCase();
         
         const codeDiv = document.getElementById('generatedCode');
         codeDiv.innerText = currentGenCode;
         codeDiv.style.display = "block";
         
-        // Copy to clipboard logic
         codeDiv.onclick = function() {
             navigator.clipboard.writeText(currentGenCode);
-            alert("Code copied to clipboard!");
-            document.getElementById('redeemSection').classList.remove('hidden');
+            alert("Code Copied! Now paste it in the redeem box.");
+            document.getElementById('redeemSection').style.display = "block";
+            document.getElementById('redeemSection').classList.add('visible');
         };
     }
 
@@ -98,7 +214,7 @@
             status.innerText = "Successful Withdrawal ✅";
             status.className = "success";
         } else {
-            status.innerText = "Invalid Code ❌";
+            status.innerText = "Invalid Code! Try Again ❌";
             status.className = "error";
         }
     }
