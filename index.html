@@ -3,224 +3,1072 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shardex Gen Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
+    <title>Nexus Rewards | Premium Gaming Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        :root {
-            --cream: #FFF5E1;
-            --orange: #FF9F45;
-            --orange-deep: #F76E11;
-            --success: #2ecc71;
-            --error: #e74c3c;
-        }
-
-        * { font-family: 'Poppins', sans-serif; box-sizing: border-box; }
-
-        body {
-            background: linear-gradient(135deg, #FF9F45 0%, #FFF5E1 100%);
-            height: 100vh;
+        /* --- RESET & VARIABLES --- */
+        * {
+            box-sizing: border-box;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 0;
+            font-family: 'Rajdhani', sans-serif;
+            user-select: none;
         }
 
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            width: 400px;
-            text-align: center;
-            border: 5px solid var(--cream);
+        :root {
+            --bg-primary: #0a051b;
+            --purple-glow: rgba(138, 43, 226, 0.6);
+            --accent-purple: #a855f7;
+            --bright-neon: #d8b4fe;
+            --glass-bg: rgba(20, 10, 35, 0.65);
+            --glass-border: rgba(168, 85, 247, 0.25);
+            --text-main: #f3e8ff;
+            --text-muted: #c084fc;
+            --error-color: #ef4444;
+            --success-color: #22c55e;
+            --font-display: 'Orbitron', sans-serif;
         }
 
-        h2 { 
-            font-family: 'Orbitron', sans-serif; 
-            color: var(--orange-deep); 
-            letter-spacing: 2px;
-            margin-bottom: 25px;
-        }
-
-        .hidden { display: none; }
-
-        /* Input Styles */
-        input {
+        body, html {
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid var(--cream);
-            border-radius: 15px;
-            outline: none;
-            transition: 0.3s;
-            font-size: 14px;
-            text-align: center;
+            height: 100%;
+            overflow-x: hidden;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
         }
 
-        input:focus { border-color: var(--orange); }
-
-        /* Button Styles */
-        button {
+        /* --- BACKGROUND PARTICLES & GRADIENT --- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 15px;
-            background: linear-gradient(45deg, var(--orange), var(--orange-deep));
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(247, 110, 17, 0.3);
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1e0b36 0%, #0a051b 100%);
         }
 
-        button:hover { transform: scale(1.02); opacity: 0.9; }
-
-        /* Code Box */
-        #codeBox {
-            font-family: 'Orbitron', sans-serif;
-            background: var(--cream);
-            color: var(--orange-deep);
-            padding: 20px;
-            border-radius: 15px;
-            margin: 15px 0;
-            border: 2px dashed var(--orange);
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Custom Popup */
-        #popup {
+        /* --- UTILITIES & NOTIFICATIONS --- */
+        .notification-container {
             position: fixed;
             top: 20px;
-            right: -350px;
-            background: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            border-left: 6px solid var(--orange-deep);
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            right: 20px;
             z-index: 9999;
-            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .error-msg { color: var(--error); font-size: 11px; margin-top: -5px; display: none; }
+        .toast {
+            background: rgba(15, 5, 25, 0.9);
+            border-left: 4px solid var(--accent-purple);
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(168, 85, 247, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 280px;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--error-color); color: #fca5a5; }
+        .toast.success { border-left-color: var(--success-color); color: #bbf7d0; }
+
+        /* --- GLASSMORPHISM SYSTEM --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 
+                        0 0 20px rgba(168, 85, 247, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(168, 85, 247, 0.45);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), 
+                        0 0 30px rgba(168, 85, 247, 0.25);
+        }
+
+        /* --- BUTTONS & INPUTS --- */
+        .btn-premium {
+            background: linear-gradient(135deg, #7c3aed 0%, #c084fc 100%);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.7);
+        }
+
+        .btn-premium:active { transform: translateY(1px); }
+
+        .btn-premium::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            transition: none;
+            opacity: 0;
+        }
+
+        .btn-premium:hover::after {
+            animation: shine 1.5s infinite ease-in-out;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { left: 120%; opacity: 0; }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .input-ctrl {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background: rgba(10, 5, 20, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .input-ctrl:focus {
+            outline: none;
+            border-color: var(--bright-neon);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        select.input-ctrl {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        /* --- RIPPLE EFFECT --- */
+        .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-effect 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple-effect {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* --- VIEW ROUTER ARCHITECTURE --- */
+        .app-view {
+            display: none;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .app-view.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- AUTHENTICATION VIEW --- */
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .brand-header h1 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, var(--bright-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .brand-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+            letter-spacing: 1px;
+        }
+
+        .auth-toggle {
+            display: flex;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(168, 85, 247, 0.1);
+        }
+
+        .auth-toggle-btn {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .auth-toggle-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+        }
+
+        .auth-form {
+            display: none;
+            flex-direction: column;
+        }
+
+        .auth-form.active { display: flex; }
+
+        /* --- DASHBOARD VIEW --- */
+        .dashboard-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dash-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 50px;
+            padding: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar-glow {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-purple), var(--bright-neon));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px var(--purple-glow);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .reward-card {
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .reward-card .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            transition: transform 0.4s ease;
+        }
+
+        .reward-card:hover .card-icon {
+            transform: scale(1.15) translateY(-5px);
+        }
+
+        .card-nitro .card-icon { color: #5865F2; drop-shadow: 0 0 15px rgba(88,101,242,0.6); }
+        .card-orbs .card-icon { color: #00f2fe; drop-shadow: 0 0 15px rgba(0,242,254,0.6); }
+        .card-tokens .card-icon { color: #ff007f; drop-shadow: 0 0 15px rgba(255,0,127,0.6); }
+
+        .reward-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .reward-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- OPERATION WORKSPACE --- */
+        .workspace-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .workspace-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .workspace-back:hover { color: #fff; }
+
+        .workspace-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .workspace-header i { font-size: 3rem; margin-bottom: 15px; }
+
+        /* --- GENERATOR DISPLAY & CODE BOX --- */
+        .generator-output {
+            margin-top: 25px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+        .code-box-glow {
+            width: 100%;
+            background: rgba(5, 2, 12, 0.8);
+            border: 2px dashed var(--accent-purple);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            color: var(--bright-neon);
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+            margin-bottom: 20px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .code-box-glow:hover {
+            background: rgba(168, 85, 247, 0.1);
+            border-color: var(--bright-neon);
+        }
+
+        .code-box-glow small {
+            display: block;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- REDEEM PANEL / MODAL --- */
+        .redeem-panel {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 25px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 25px;
+        }
+
+        /* --- PROGRESS CIRCLE ENGINE --- */
+        .progress-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin: 25px 0;
+            display: none;
+        }
+
+        .progress-svg {
+            width: 160px;
+            height: 160px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(168, 85, 247, 0.1);
+            stroke-width: 8;
+        }
+
+        .progress-circle-fill {
+            fill: none;
+            stroke: url(#purple-gradient);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 10px var(--purple-glow);
+        }
+
+        /* --- SUCCESS ANIMATION HOOK --- */
+        .success-checkmark {
+            display: none;
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid var(--success-color);
+        }
+
+        .check-icon::after {
+            content: '';
+            position: absolute;
+            top: 45%; left: 24%;
+            width: 18px; height: 36px;
+            border-right: 4px solid var(--success-color);
+            border-bottom: 4px solid var(--success-color);
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+            animation: checkmark 0.3s ease-in forwards;
+        }
+
+        @keyframes checkmark {
+            0% { height: 0; width: 0; opacity: 0; }
+            40% { height: 0; width: 18px; opacity: 1; }
+            100% { height: 36px; width: 18px; opacity: 1; }
+        }
+
+        /* --- SOUND PLACEHOLDER --- */
+        audio { display: none; }
+
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media(max-width: 768px) {
+            .cards-grid { grid-template-columns: 1fr; }
+            .dash-nav { flex-direction: column; gap: 20px; text-align: center; }
+            .auth-container, .workspace-container { padding: 25px 20px; }
+        }
     </style>
 </head>
 <body>
 
-<div id="popup">Notification</div>
+    <canvas id="particle-canvas"></canvas>
 
-<div class="card">
-    <div id="step1">
-        <h2>Shardex Gen</h2>
-        <button onclick="nav('step1', 'step2')">Withdraw</button>
-        <button disabled style="opacity: 0.5;">Deposit (Soon)</button>
-    </div>
+    <div class="notification-container" id="toast-container"></div>
 
-    <div id="step2" class="hidden">
-        <h2>Method</h2>
-        <button onclick="openForm('Owo')">Owo Wallet</button>
-        <button onclick="openForm('LTC')">LTC Wallet</button>
-    </div>
+    <audio id="snd-click" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==:"></audio>
+    <audio id="snd-success" src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==:"></audio>
 
-    <div id="step3" class="hidden">
-        <h2 id="methodTitle">Details</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="text" id="userid" placeholder="User ID (Numbers)" oninput="checkNum(this)">
-        <div id="idErr" class="error-msg">Fill Properly (Numbers Only)</div>
-        
-        <button id="genBtn" onclick="generateCode()">Generate Code</button>
-        
-        <div id="codeDisplayArea" class="hidden">
-            <div id="codeBox" onclick="copyCode()">CODE HERE</div>
-            <p style="font-size: 11px; color: #888;">Click code to copy</p>
-            <button id="nextBtn" class="hidden" onclick="nav('step3', 'step4')" style="background: #333;">Next Step</button>
+    <svg style="width:0;height:0;position:absolute;">
+        <linearGradient id="purple-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a855f7" />
+            <stop offset="100%" stop-color="#00f2fe" />
+        </linearGradient>
+    </svg>
+
+    <div id="view-auth" class="app-view active">
+        <div class="auth-container glass-panel">
+            <div class="brand-header">
+                <h1>NEXUS REWARDS</h1>
+                <p>PORTAL GATEWAY INTERFACE</p>
+            </div>
+
+            <div class="auth-toggle">
+                <button class="auth-toggle-btn active" onclick="switchAuthTab('login')">LOGIN</button>
+                <button class="auth-toggle-btn" onclick="switchAuthTab('signup')">SIGN UP</button>
+            </div>
+
+            <form id="form-login" class="auth-form active" onsubmit="handleAuth(event, 'login')">
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="login-user" class="input-ctrl" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="login-pass" class="input-ctrl" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-premium ripple-trigger">INITIALIZE ACCESS</button>
+            </form>
+
+            <form id="form-signup" class="auth-form" onsubmit="handleAuth(event, 'signup')">
+                <div class="input-group">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <input type="text" id="signup-user" class="input-ctrl" placeholder="Create Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="signup-pass" class="input-ctrl" placeholder="Create Password" required>
+                </div>
+                <button type="submit" class="btn-premium ripple-trigger">REGISTER IDENTITY</button>
+            </form>
         </div>
     </div>
 
-    <div id="step4" class="hidden">
-        <h2>Redeem</h2>
-        <input type="text" id="redeemInput" placeholder="Paste Code Here" oninput="checkRedeem(this)">
-        
-        <button id="redeemBtn" class="hidden" onclick="finalProcess()" style="background: var(--success);">Redeem Now</button>
-        
-        <div id="finalMessage" style="margin-top: 20px; font-weight: bold;"></div>
+    <div id="view-dash" class="app-view">
+        <div class="dashboard-wrapper">
+            <header class="dash-nav glass-panel">
+                <div class="brand-header" style="margin:0; text-align: left;">
+                    <h1 style="font-size: 1.6rem;">NEXUS DASHBOARD</h1>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar-glow"><i class="fa-solid fa-terminal"></i></div>
+                    <div>
+                        <div id="display-username" style="font-weight: 700; letter-spacing: 0.5px;">OPERATOR</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px;">STATUS: SECURE</div>
+                    </div>
+                    <button class="btn-premium" style="padding: 8px 15px; font-size: 0.75rem; margin-left: 15px;" onclick="logOut()">DISCONNECT</button>
+                </div>
+            </header>
+
+            <div class="cards-grid">
+                <div class="reward-card glass-panel card-nitro" onclick="openWorkspace('nitro')">
+                    <div class="card-icon"><i class="fa-brands fa-discord"></i></div>
+                    <h3>DISCORD NITRO</h3>
+                    <p>Acquire Premium Subscriptions, custom boosting capabilities, and elite global emoji access arrays.</p>
+                </div>
+                <div class="reward-card glass-panel card-orbs" onclick="openWorkspace('orbs')">
+                    <div class="card-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                    <h3>NEXUS ORBS</h3>
+                    <p>Harvest system-wide essence Orbs used to synthesize premium cosmetics and profile enhancement algorithms.</p>
+                </div>
+                <div class="reward-card glass-panel card-tokens" onclick="openWorkspace('tokens')">
+                    <div class="card-icon"><i class="fa-solid fa-coins"></i></div>
+                    <h3>CORE TOKENS</h3>
+                    <p>Inject premium exchange units directly into your user pipeline database configuration parameters.</p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-    let myCode = "";
+    <div id="view-workspace" class="app-view">
+        <div class="workspace-container glass-panel">
+            <div class="workspace-back" onclick="navigateTo('view-dash')">
+                <i class="fa-solid fa-arrow-left-long"></i> BACK TO MATRIX
+            </div>
 
-    function showPopup(msg, color = "#F76E11") {
-        const p = document.getElementById('popup');
-        p.innerText = msg;
-        p.style.borderLeftColor = color;
-        p.style.right = "20px";
-        setTimeout(() => { p.style.right = "-350px"; }, 3000);
-    }
+            <div class="workspace-header">
+                <i id="ws-icon" class="fa-solid"></i>
+                <h2 id="ws-title" class="brand-header" style="font-family: var(--font-display); font-size: 1.8rem; margin-top:10px;">GENERATOR</h2>
+                <p id="ws-desc" style="color: var(--text-muted); font-size: 0.9rem; letter-spacing: 0.5px;"></p>
+            </div>
 
-    function nav(h, s) {
-        document.getElementById(h).classList.add('hidden');
-        document.getElementById(s).classList.remove('hidden');
-    }
+            <form id="ws-form" onsubmit="processGeneration(event)">
+                <div class="input-group">
+                    <i class="fa-solid fa-at"></i>
+                    <input type="text" id="ws-input-user" class="input-ctrl" placeholder="Discord Username (e.g., cyber_ghost)" required>
+                </div>
+                
+                <div id="ws-secondary-fields" style="display: none; animation: fadeIn 0.4s ease forwards;">
+                    <div class="input-group">
+                        <i class="fa-solid fa-fingerprint"></i>
+                        <input type="text" id="ws-input-id" class="input-ctrl" placeholder="Discord User ID (18 digit numeric tracking code)">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-cubes"></i>
+                        <select id="ws-dropdown" class="input-ctrl"></select>
+                        <i class="fa-solid fa-chevron-down" style="left: auto; right: 15px; pointer-events: none;"></i>
+                    </div>
+                </div>
 
-    function openForm(m) {
-        document.getElementById('methodTitle').innerText = m + " Portal";
-        nav('step2', 'step3');
-    }
+                <button type="submit" id="ws-submit-btn" class="btn-premium ripple-trigger" style="width: 100%;">VALIDATE ACCOUNT MATRIX</button>
+            </form>
 
-    function checkNum(el) {
-        const err = document.getElementById('idErr');
-        if (/[^0-9]/.test(el.value)) {
-            err.style.display = "block";
-            el.style.borderColor = "var(--error)";
-        } else {
-            err.style.display = "none";
-            el.style.borderColor = "var(--cream)";
+            <div id="ws-output" class="generator-output">
+                <div class="code-box-glow" id="code-display" onclick="copyGeneratedCode()">
+                    <span>XXXX-XXXX-XXXX-XXXX</span>
+                    <small><i class="fa-solid fa-copy"></i> CLICK CODESPACE ARRAY TO COPY</small>
+                </div>
+                <button id="ws-redeem-trigger-btn" class="btn-premium ripple-trigger" style="width:100%; display:none;" onclick="revealRedeemPortal()">INITIALIZE REDEMPTION PIPELINE</button>
+            </div>
+
+            <div id="ws-redeem-panel" class="redeem-panel">
+                <h3 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 1px;">CENTRAL REDEMPTION VAULT</h3>
+                <div class="input-group">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="text" id="ws-redeem-input" class="input-ctrl" placeholder="Paste Generated Secure Package Code Array" required>
+                </div>
+                <button class="btn-premium ripple-trigger" style="width:100%;" onclick="executeRedemption()">EXECUTE VAULT INJECTION</button>
+
+                <div class="progress-wrapper" id="core-progress-engine">
+                    <svg class="progress-svg">
+                        <circle class="progress-circle-bg" cx="80" cy="80" r="70" />
+                        <circle class="progress-circle-fill" id="progress-bar-fill" cx="80" cy="80" r="70" />
+                    </svg>
+                    <div class="progress-text" id="progress-percentage-text">0%</div>
+                </div>
+
+                <div class="success-checkmark" id="core-success-engine">
+                    <div class="check-icon"></div>
+                </div>
+                <div id="success-message" style="display:none; text-align:center; margin-top:15px;">
+                    <h2 style="font-family: var(--font-display); color: var(--success-color); font-size: 1.8rem; letter-spacing: 2px;">SUCCESSFUL</h2>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top:5px;">DATABASE SYNCHRONIZATION COMPLETE. ASSETS DISTRIBUTED.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- APPLICATION CONTEXT DEFINITIONS --- */
+        let currentWorkspaceType = '';
+        let generatedSecurityKey = '';
+        let isAccountValidated = false;
+
+        const CONFIG_MATRIX = {
+            nitro: {
+                title: "DISCORD NITRO MATRIX",
+                desc: "Inject verified nitro configurations directly into your designated telemetry account profile.",
+                icon: "fa-brands fa-discord",
+                options: ["1 Month Premium Tier", "3 Months Booster Configuration", "1 Year Elite Tier Package"]
+            },
+            orbs: {
+                title: "NEXUS ORB SYNTHESIZER",
+                desc: "Materialize energy structural matrices to credit your master user account balances.",
+                icon: "fa-solid fa-circle-nodes",
+                options: ["1,000 High-Density Orbs", "5,000 High-Density Orbs", "10,000 High-Density Orbs"]
+            },
+            tokens: {
+                title: "CORE TOKEN INJECTOR",
+                desc: "Liquidize transaction assets to transfer directly into the localized ledger system.",
+                icon: "fa-solid fa-coins",
+                options: ["1,000 Core Ledger Tokens", "5,000 Core Ledger Tokens", "10,000 Core Ledger Tokens"]
+            }
+        };
+
+        /* --- BACKGROUND CANVAS PARTICLE SYSTEM ENGINE --- */
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
-    }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-    function generateCode() {
-        const u = document.getElementById('username').value;
-        const i = document.getElementById('userid').value;
-        if(u === "" || i === "" || /[^0-9]/.test(i)) {
-            showPopup("Fill Properly!", "#e74c3c");
-            return;
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = "#a855f7";
+                ctx.fillStyle = "#d8b4fe";
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
         }
 
-        myCode = "SHX-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-        document.getElementById('codeBox').innerText = myCode;
-        document.getElementById('codeDisplayArea').classList.remove('hidden');
-        document.getElementById('genBtn').classList.add('hidden');
-        showPopup("Code Generated!");
-    }
-
-    function copyCode() {
-        navigator.clipboard.writeText(myCode);
-        showPopup("Copied! Click Next.", "#2ecc71");
-        document.getElementById('nextBtn').classList.remove('hidden');
-    }
-
-    function checkRedeem(el) {
-        const rBtn = document.getElementById('redeemBtn');
-        if(el.value.trim() === myCode) {
-            rBtn.classList.remove('hidden');
-        } else {
-            rBtn.classList.add('hidden');
+        function initParticles() {
+            particlesArray = [];
+            const count = Math.min(Math.floor(window.innerWidth / 12), 100);
+            for(let i=0; i < count; i++) {
+                particlesArray.push(new Particle());
+            }
         }
-    }
 
-    function finalProcess() {
-        const msg = document.getElementById('finalMessage');
-        msg.innerHTML = "<span style='color:var(--success)'>Successfully Withdrawal ✅</span>";
-        showPopup("Withdrawal Completed!", "#2ecc71");
-        document.getElementById('redeemBtn').style.display = "none";
-    }
-</script>
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw a base radial atmospheric depth gradient
+            let gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 10, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height));
+            gradient.addColorStop(0, '#15062b');
+            gradient.addColorStop(0.6, '#080314');
+            gradient.addColorStop(1, '#020005');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            for(let i=0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        /* --- NOTIFICATION ENGINE --- */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let icon = '<i class="fa-solid fa-circle-info"></i>';
+            if(type === 'success') { icon = '<i class="fa-solid fa-circle-check"></i>'; playSound('snd-success'); }
+            if(type === 'error') icon = '<i class="fa-solid fa-triangle-exclamation"></i>';
+
+            toast.innerHTML = `${icon} <div>${message}</div>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 50);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 4000);
+        }
+
+        function playSound(elementId) {
+            const audio = document.getElementById(elementId);
+            if(audio) {
+                audio.currentTime = 0;
+                audio.play().catch(()=>{/* Browsers block autoplay mechanics safely */});
+            }
+        }
+
+        /* --- INTERACTION RIPPLE CONTROLLER --- */
+        document.addEventListener('click', function(e) {
+            const target = e.target.closest('.ripple-trigger, .btn-premium, .reward-card');
+            if (!target) return;
+            
+            playSound('snd-click');
+            
+            const rect = target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            target.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        /* --- NAVIGATION & SYSTEM TRANSITIONS --- */
+        function navigateTo(viewId) {
+            const views = document.querySelectorAll('.app-view');
+            const currentActive = document.querySelector('.app-view.active');
+            
+            if(currentActive) {
+                currentActive.style.opacity = '0';
+                currentActive.style.transform = 'scale(0.97)';
+                setTimeout(() => {
+                    currentActive.classList.remove('active');
+                    executeTargetViewIntro(viewId);
+                }, 400);
+            } else {
+                executeTargetViewIntro(viewId);
+            }
+        }
+
+        function executeTargetViewIntro(viewId) {
+            const targetView = document.getElementById(viewId);
+            targetView.classList.add('active');
+            // Force redraw layout browser execution cycle
+            targetView.offsetHeight; 
+            targetView.style.opacity = '1';
+            targetView.style.transform = 'scale(1)';
+        }
+
+        function switchAuthTab(mode) {
+            const tabs = document.querySelectorAll('.auth-toggle-btn');
+            const forms = document.querySelectorAll('.auth-form');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            
+            if(mode === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('form-login').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('form-signup').classList.add('active');
+            }
+        }
+
+        /* --- SECURE LOCALSTORAGE AUTHENTICATION ROUTINES --- */
+        function handleAuth(event, type) {
+            event.preventDefault();
+            if(type === 'signup') {
+                const user = document.getElementById('signup-user').value.trim();
+                const pass = document.getElementById('signup-pass').value;
+                
+                if(user.length < 3) {
+                    showToast("Username context metrics must exceed 3 indices.", "error");
+                    return;
+                }
+                
+                let users = JSON.parse(localStorage.getItem('nexus_users') || '{}');
+                if(users[user.toLowerCase()]) {
+                    showToast("Identity configuration signature already registered in vault.", "error");
+                    return;
+                }
+                
+                users[user.toLowerCase()] = { username: user, password: btoa(pass) }; // Basic cryptographic structural simulation
+                localStorage.setItem('nexus_users', JSON.stringify(users));
+                showToast("Identity signed to LocalStorage cluster. You may authenticate.", "success");
+                document.getElementById('form-signup').reset();
+                switchAuthTab('login');
+            } 
+            else if(type === 'login') {
+                const user = document.getElementById('login-user').value.trim().toLowerCase();
+                const pass = document.getElementById('login-pass').value;
+                
+                let users = JSON.parse(localStorage.getItem('nexus_users') || '{}');
+                
+                if(users[user] && atob(users[user].password) === pass) {
+                    localStorage.setItem('nexus_current_session', users[user].username);
+                    showToast("Handshake confirmed. Granting secure access terminal...", "success");
+                    document.getElementById('display-username').innerText = users[user].username.toUpperCase();
+                    document.getElementById('form-login').reset();
+                    setTimeout(() => navigateTo('view-dash'), 1000);
+                } else {
+                    showToast("Security Exception: Access credentials validation mismatch.", "error");
+                }
+            }
+        }
+
+        function logOut() {
+            localStorage.removeItem('nexus_current_session');
+            showToast("Secure connection closed cleanly.", "info");
+            navigateTo('view-auth');
+        }
+
+        /* --- OPERATIONS PIPELINE WORKSPACE IMPLEMENTATION --- */
+        function openWorkspace(type) {
+            currentWorkspaceType = type;
+            const meta = CONFIG_MATRIX[type];
+            
+            // Clean/Reset prior parameters from reuse tracks
+            isAccountValidated = false;
+            generatedSecurityKey = '';
+            document.getElementById('ws-form').reset();
+            document.getElementById('ws-secondary-fields').style.display = 'none';
+            document.getElementById('ws-output').style.display = 'none';
+            document.getElementById('ws-redeem-trigger-btn').style.display = 'none';
+            document.getElementById('ws-redeem-panel').style.display = 'none';
+            document.getElementById('core-progress-engine').style.display = 'none';
+            document.getElementById('core-success-engine').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('ws-submit-btn').innerText = "VALIDATE ACCOUNT MATRIX";
+            document.getElementById('ws-input-user').disabled = false;
+
+            // Load view data matrices
+            document.getElementById('ws-icon').className = `fa-solid ${meta.icon}`;
+            document.getElementById('ws-title').innerText = meta.title;
+            document.getElementById('ws-desc').innerText = meta.desc;
+            
+            const drop = document.getElementById('ws-dropdown');
+            drop.innerHTML = '';
+            meta.options.forEach(opt => {
+                let el = document.createElement('option');
+                el.value = opt; el.innerText = opt;
+                drop.appendChild(el);
+            });
+
+            // Handle styling definitions dynamically per platform
+            const headerIcon = document.getElementById('ws-icon');
+            if(type === 'nitro') headerIcon.style.color = '#5865F2';
+            if(type === 'orbs') headerIcon.style.color = '#00f2fe';
+            if(type === 'tokens') headerIcon.style.color = '#ff007f';
+
+            navigateTo('view-workspace');
+        }
+
+        function processGeneration(event) {
+            event.preventDefault();
+            const usernameInput = document.getElementById('ws-input-user').value.trim();
+
+            if(!isAccountValidated) {
+                // System simulation check validating username requirements format rules
+                const userRegex = /^[a-z0-9_.-]{2,32}$/i;
+                if(!userRegex.test(usernameInput)) {
+                    showToast("Discord username does not exist.", "error");
+                    return;
+                }
+
+                showToast("Account string detected. Querying system ledger records...", "info");
+                
+                setTimeout(() => {
+                    isAccountValidated = true;
+                    showToast("Identity verified. Specify payload operational metrics.", "success");
+                    document.getElementById('ws-input-user').disabled = true;
+                    document.getElementById('ws-secondary-fields').style.display = 'block';
+                    document.getElementById('ws-input-id').required = true;
+                    document.getElementById('ws-submit-btn').innerText = "GENERATE SECURITY MATRIX";
+                }, 1200);
+            } else {
+                const idInput = document.getElementById('ws-input-id').value.trim();
+                if(!/^\d{17,19}$/.test(idInput)) {
+                    showToast("Invalid Configuration: User ID must map to a 17-19 digit sequence.", "error");
+                    return;
+                }
+
+                showToast("Synthesizing system encryption authorization keys...", "info");
+                document.getElementById('ws-submit-btn').disabled = true;
+
+                setTimeout(() => {
+                    // Generate specialized cryptographic code output string
+                    const segments = ['NEXS', currentWorkspaceType.toUpperCase().slice(0,4), Math.random().toString(36).substr(2, 4).toUpperCase(), Math.random().toString(36).substr(2, 4).toUpperCase()];
+                    generatedSecurityKey = segments.join('-');
+                    
+                    document.getElementById('code-display').firstElementChild.innerText = generatedSecurityKey;
+                    document.getElementById('ws-output').style.display = 'flex';
+                    document.getElementById('ws-submit-btn').disabled = false;
+                    showToast("Security payload key generation script complete.", "success");
+                }, 1500);
+            }
+        }
+
+        function copyGeneratedCode() {
+            if(!generatedSecurityKey) return;
+            navigator.clipboard.writeText(generatedSecurityKey).then(() => {
+                showToast("Security structural code copied down into system clipboard.", "success");
+                document.getElementById('ws-redeem-trigger-btn').style.display = 'block';
+            }).catch(() => {
+                showToast("Clipboard subsystem context capture failed.", "error");
+            });
+        }
+
+        function revealRedeemPortal() {
+            document.getElementById('ws-redeem-panel').style.display = 'flex';
+            document.getElementById('ws-redeem-input').focus();
+            // Smooth view indexing displacement alignment adjustments
+            setTimeout(() => {
+                document.getElementById('ws-redeem-panel').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function executeRedemption() {
+            const enteredCode = document.getElementById('ws-redeem-input').value.trim();
+            if(enteredCode !== generatedSecurityKey) {
+                showToast("Invalid validation token: Security cryptographic key mismatch.", "error");
+                return;
+            }
+
+            // Disable re-entry interactions during synchronization routine execution
+            document.getElementById('ws-redeem-input').disabled = true;
+            const progressWrapper = document.getElementById('core-progress-engine');
+            const progressFill = document.getElementById('progress-bar-fill');
+            const progressText = document.getElementById('progress-percentage-text');
+            
+            progressWrapper.style.display = 'block';
+            let currentPct = 0;
+            const totalDashOffset = 440; // Derived directly via SVG circle parameters formula
+
+            const progressTimer = setInterval(() => {
+                currentPct++;
+                progressText.innerText = `${currentPct}%`;
+                
+                // Track geometric fill updates natively inside CSS mapping space
+                const offset = totalDashOffset - (currentPct / 100) * totalDashOffset;
+                progressFill.style.strokeDashoffset = offset;
+
+                if(currentPct >= 100) {
+                    clearInterval(progressTimer);
+                    setTimeout(() => {
+                        progressWrapper.style.display = 'none';
+                        document.getElementById('core-success-engine').style.display = 'block';
+                        document.getElementById('success-message').style.display = 'block';
+                        showToast("Verification synchronization pipeline confirmed. Balance modified.", "success");
+                    }, 400);
+                }
+            }, 40); // 4 seconds absolute duration trajectory sequence
+        }
+
+        /* --- RUNTIME INITIALIZATION HOOKS --- */
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeSession = localStorage.getItem('nexus_current_session');
+            if(activeSession) {
+                document.getElementById('display-username').innerText = activeSession.toUpperCase();
+                navigateTo('view-dash');
+            } else {
+                navigateTo('view-auth');
+            }
+        });
+    </script>
 </body>
 </html>
+
